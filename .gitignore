@@ -5,3 +5,5 @@ build.ps1
 run.ps1
 # ignore local phpstan config
 phpstan.neon
+# ignore cache files
+*.cache
