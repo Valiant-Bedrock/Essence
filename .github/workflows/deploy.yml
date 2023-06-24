@@ -54,4 +54,4 @@ jobs:
          api-key: ${{ secrets.PANEL_API_KEY }}
          server-ids: ${{ secrets.PANEL_SERVER_IDS }}
          source: ${{ env.PHAR_OUTPUT }}
-         target: plugins/${{ env.PHAR_OUTPUT }}.phar
+         target: plugins/${{ env.PHAR_OUTPUT }}
