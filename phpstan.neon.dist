@@ -1,0 +1,11 @@
+parameters:
+	level: max
+	paths:
+		- src
+	bootstrapFiles:
+	    - vendor/autoload.php
+	scanDirectories:
+	    - phar://libasynql.phar/src
+	excludePaths:
+	    analyse:
+	      - phar://libasynql.phar/src

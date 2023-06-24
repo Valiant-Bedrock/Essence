@@ -1,0 +1,7 @@
+name: Essence
+description: PMMP plugin to implement essential features for the network.
+version: 0.1.0
+author: sylvrs
+main: essence\EssenceBase
+api:
+  - 4.0.0

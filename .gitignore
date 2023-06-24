@@ -1,0 +1,7 @@
+vendor/
+.idea/
+# ignore local build scripts
+build.ps1
+run.ps1
+# ignore local phpstan config
+phpstan.neon
