@@ -1,0 +1,54 @@
+name: Build PHAR
+on: [push]
+env:
+  # PHP environment variables used for downloading, extraction, and running PHP
+  PHP_DOWNLOAD_PATH: https://github.com/NetherGamesMC/php-build-scripts/releases/download/8.2/Linux.zip
+  PHP_DOWNLOAD_NAME: Linux.zip
+  PHP_ARTIFACT_NAME: PHP_Linux-x86_64.tar.gz
+  PHP_PATH: ./bin/php7/bin
+  PHP_BINARY_PATH: ./bin/php7/bin/php -dphar.readonly=0
+  LIBASYNQL_PATH: https://poggit.pmmp.io/r/204062/libasynql_dev-199.phar
+  LIBASYNQL_OUTPUT: libasynql.phar
+  PHAR_OUTPUT: Essence.phar
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, '[build]')"
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v3
+      - name: "Checkout pharbuilder"
+        uses: actions/checkout@v3
+        with:
+          repository: "Valiant-Bedrock/pharbuilder"
+          token: ${{ secrets.ORG_ACCESS_TOKEN }}
+          path: "pharbuilder"
+      - name: Download PHP
+        run: wget ${{ env.PHP_DOWNLOAD_PATH }}
+      - name: Unzip PHP
+        run: unzip ${{ env.PHP_DOWNLOAD_NAME }} -d ./
+      - name: Untar PHP
+        run: tar -xzvf ${{ env.PHP_ARTIFACT_NAME }} -C ./
+      - name: Clean up files
+        run: |
+          rm ${{ env.PHP_DOWNLOAD_NAME }}
+          rm ${{ env.PHP_ARTIFACT_NAME }}
+          rm install.log
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | ${{ env.PHP_BINARY_PATH }}
+      - name: Install Composer dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{secrets.COMPOSER_AUTH_TOKEN}}"} }' # [tl! **]
+        run: ${{ env.PHP_BINARY_PATH }} composer.phar install --no-dev --prefer-dist --no-interaction --ignore-platform-reqs
+      - name: Compile PHAR
+        run: ${{ env.PHP_BINARY_PATH }} ./pharbuilder/run.php --input="./" --output=${{ env.PHAR_OUTPUT }} --exclude="pharbuilder" --exclude="bin" --exclude="composer.phar" --exclude="scripts"
+      # Download virions (this could be improved)
+      - name: Download libasynql
+        run: wget ${{ env.LIBASYNQL_PATH }} -O ${{ env.LIBASYNQL_OUTPUT }}
+      - name: Shade virions
+        run: ${{ env.PHP_BINARY_PATH }} ${{ env.LIBASYNQL_OUTPUT }} ${{ env.PHAR_OUTPUT }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.PHAR_OUTPUT }}
+          path: ${{ env.PHAR_OUTPUT }}

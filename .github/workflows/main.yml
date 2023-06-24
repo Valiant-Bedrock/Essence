@@ -1,0 +1,37 @@
+name: Continuous Integration
+on: [push]
+env:
+  # PHP environment variables used for downloading, extraction, and running PHP
+  PHP_DOWNLOAD_PATH: https://github.com/NetherGamesMC/php-build-scripts/releases/download/8.2/Linux.zip
+  PHP_DOWNLOAD_NAME: Linux.zip
+  PHP_ARTIFACT_NAME: PHP_Linux-x86_64.tar.gz
+  PHP_PATH: ./bin/php7/bin
+  PHP_BINARY_PATH: ./bin/php7/bin/php
+  # Virions that will be used in the plugin (their download path and output file name)
+  LIBASYNQL_PATH: https://poggit.pmmp.io/r/204062/libasynql_dev-199.phar
+  LIBASYNQL_OUTPUT: libasynql.phar
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download PHP
+        run: wget ${{ env.PHP_DOWNLOAD_PATH }}
+      - name: Unzip PHP
+        run: unzip ${{ env.PHP_DOWNLOAD_NAME }} -d ./
+      - name: Untar PHP
+        run: tar -xzvf ${{ env.PHP_ARTIFACT_NAME }} -C ./
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | ${{ env.PHP_BINARY_PATH }}
+      - name: Install Composer dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{secrets.COMPOSER_AUTH_TOKEN}}"} }' # [tl! **]
+        run: ${{ env.PHP_BINARY_PATH }} composer.phar install --prefer-dist --no-interaction
+      - name: Download libasynql
+        run: wget ${{ env.LIBASYNQL_PATH }} -O ${{ env.LIBASYNQL_OUTPUT }}
+      # PHPStan
+      - name: Run PHPStan
+        run: ${{ env.PHP_BINARY_PATH }} ./vendor/bin/phpstan.phar analyze
+      # Code style checks
+      - name: Analyze code style
+        run: ${{ env.PHP_BINARY_PATH }} ./vendor/bin/php-cs-fixer fix --dry-run --diff
