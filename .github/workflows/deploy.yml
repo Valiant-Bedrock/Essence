@@ -7,7 +7,7 @@ env:
   PHP_ARTIFACT_NAME: PHP_Linux-x86_64.tar.gz
   PHP_PATH: ./bin/php7/bin
   PHP_BINARY_PATH: ./bin/php7/bin/php -dphar.readonly=0
-  LIBASYNQL_PATH: https://poggit.pmmp.io/r/204062/libasynql_dev-199.phar
+  LIBASYNQL_PATH: https://poggit.pmmp.io/r/213142/libasynql_dev-203.phar
   LIBASYNQL_OUTPUT: libasynql.phar
   PHAR_OUTPUT: Essence.phar
 jobs:
