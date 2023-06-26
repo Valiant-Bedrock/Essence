@@ -20,12 +20,14 @@ use essence\session\PlayerSessionManager;
 use Generator;
 use libcommand\LibCommandBase;
 use libcommand\VanillaCommandPatcher;
+use pocketmine\command\Command;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
 use poggit\libasynql\DataConnector;
 use poggit\libasynql\libasynql;
+use RuntimeException;
 use SOFe\AwaitGenerator\Await;
 use Throwable;
 use function array_rand;
@@ -53,14 +55,7 @@ final class EssenceBase extends PluginBase {
 			configData: $this->getConfig()->get("database", []),
 			sqlMap: ["mysql" => "mysql.sql"]
 		);
-
-		// register commands
-		LibCommandBase::register($this);
-		VanillaCommandPatcher::register($this);
-		$this->getServer()->getCommandMap()->registerAll("essence", [
-			new SetRoleCommand(plugin: $this)
-		]);
-
+		$this->setupCommands();
 		// finish setup
 		$this->getServer()->getPluginManager()->registerEvents(listener: new EssenceListener($this), plugin: $this);
 		$this->getServer()->getNetwork()->setName(self::MOTD_PREFIX . TextFormat::colorize(self::MOTD_MESSAGES[array_rand(self::MOTD_MESSAGES)]));
@@ -72,6 +67,22 @@ final class EssenceBase extends PluginBase {
 
 	public function getConnector(): DataConnector {
 		return $this->connector;
+	}
+
+	public function setupCommands(): void {
+		LibCommandBase::register($this);
+		VanillaCommandPatcher::register($this);
+		$this->getServer()->getCommandMap()->registerAll("essence", [
+			// new FreezeCommand(plugin: $this),
+			new SetRoleCommand(plugin: $this)
+		]);
+
+		$killCommand = $this->mustGetCommand("kill");
+		$killCommand->setPermission((string) EssencePermissions::COMMAND_KILL());
+	}
+
+	private function mustGetCommand(string $name): Command {
+		return $this->getServer()->getCommandMap()->getCommand($name) ?? throw new RuntimeException("Command $name not found");
 	}
 
 	/**
