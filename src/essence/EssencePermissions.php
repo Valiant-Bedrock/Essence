@@ -21,12 +21,16 @@ use pocketmine\utils\RegistryTrait;
 use function array_fill_keys;
 
 /**
+ * @method static self COMMAND_FREEZE()
+ * @method static self COMMAND_KILL()
  * @method static self COMMAND_SETROLE()
  */
 final class EssencePermissions {
 	use RegistryTrait;
 
 	protected static function setup(): void {
+		self::register("command_freeze", "essence.command.freeze", "Allows the player to use the `freeze` command", true);
+		self::register("command_kill", "essence.command.kill", "Allows the player to use the `kill` command", true);
 		self::register("command_setrole", "essence.command.setrole", "Allows the player to use the `setrole` command", true);
 	}
 
