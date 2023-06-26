@@ -2120,12 +2120,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/diff.git",
-                "reference": "7b18d8883fd1a433ca6b476b0e27709ec2bec199"
+                "reference": "022f5368daf850addc61eb26575d756fb8eb380a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/7b18d8883fd1a433ca6b476b0e27709ec2bec199",
-                "reference": "7b18d8883fd1a433ca6b476b0e27709ec2bec199",
+                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/022f5368daf850addc61eb26575d756fb8eb380a",
+                "reference": "022f5368daf850addc61eb26575d756fb8eb380a",
                 "shasum": ""
             },
             "require": {
@@ -2180,7 +2180,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-24T12:45:07+00:00"
+            "time": "2023-06-25T17:45:51+00:00"
         },
         {
             "name": "symfony/console",
