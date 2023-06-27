@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace essence\role;
 
+use essence\EssencePermissions;
 use InvalidArgumentException;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\utils\RegistryTrait;
@@ -38,12 +39,16 @@ final class EssenceRole {
 			permissions: [
 				"uhc.command.bypass",
 				"uhc.command.create",
+				(string) EssencePermissions::COMMAND_FREEZE(),
+				DefaultPermissionNames::COMMAND_BAN_IP,
+				DefaultPermissionNames::COMMAND_BAN_PLAYER,
 				DefaultPermissionNames::COMMAND_CLEAR_OTHER,
 				DefaultPermissionNames::COMMAND_CLEAR_SELF,
 				DefaultPermissionNames::COMMAND_EFFECT,
 				DefaultPermissionNames::COMMAND_ENCHANT,
 				DefaultPermissionNames::COMMAND_GIVE,
 				DefaultPermissionNames::COMMAND_GAMEMODE,
+				DefaultPermissionNames::COMMAND_KICK,
 				DefaultPermissionNames::COMMAND_WHITELIST_ENABLE,
 				DefaultPermissionNames::COMMAND_WHITELIST_DISABLE,
 				DefaultPermissionNames::COMMAND_WHITELIST_ADD,
@@ -64,18 +69,22 @@ final class EssenceRole {
 			permissions: [
 				"uhc.command.bypass",
 				"uhc.command.create",
+				(string) EssencePermissions::COMMAND_FREEZE(),
+				DefaultPermissionNames::COMMAND_BAN_IP,
+				DefaultPermissionNames::COMMAND_BAN_PLAYER,
 				DefaultPermissionNames::COMMAND_CLEAR_OTHER,
 				DefaultPermissionNames::COMMAND_CLEAR_SELF,
 				DefaultPermissionNames::COMMAND_EFFECT,
 				DefaultPermissionNames::COMMAND_ENCHANT,
 				DefaultPermissionNames::COMMAND_GIVE,
 				DefaultPermissionNames::COMMAND_GAMEMODE,
+				DefaultPermissionNames::COMMAND_KICK,
 				DefaultPermissionNames::COMMAND_WHITELIST_ENABLE,
 				DefaultPermissionNames::COMMAND_WHITELIST_DISABLE,
 				DefaultPermissionNames::COMMAND_WHITELIST_ADD,
 				DefaultPermissionNames::COMMAND_WHITELIST_REMOVE,
 				DefaultPermissionNames::COMMAND_TELEPORT,
-			]
+			],
 		);
 		self::register(
 			name: "executive",
