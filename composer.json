@@ -5,7 +5,7 @@
   "version": "0.5.0",
   "require": {
     "php": ">=8.2",
-    "valiant-bedrock/libcommand": "dev-master",
+    "valiant-bedrock/libcommand": "dev-legacy/pm4",
     "sylvrs/libmarshal": ">=1.4.3",
     "sof3/await-generator": ">=3.5.2"
   },

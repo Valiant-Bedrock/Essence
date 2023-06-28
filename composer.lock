@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4158d138733558542fdf78eaec479e0b",
+    "content-hash": "4add1043eca490438a1cb003950282c9",
     "packages": [
         {
             "name": "sof3/await-generator",
@@ -109,16 +109,16 @@
         },
         {
             "name": "valiant-bedrock/libcommand",
-            "version": "dev-master",
+            "version": "dev-legacy/pm4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Valiant-Bedrock/libcommand.git",
-                "reference": "5dc90d3f24f51cf9729200074f397f3f5d4c079c"
+                "reference": "0d9f1593efcc8b0b814ede35a29a076ecd4231d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Valiant-Bedrock/libcommand/zipball/5dc90d3f24f51cf9729200074f397f3f5d4c079c",
-                "reference": "5dc90d3f24f51cf9729200074f397f3f5d4c079c",
+                "url": "https://api.github.com/repos/Valiant-Bedrock/libcommand/zipball/0d9f1593efcc8b0b814ede35a29a076ecd4231d4",
+                "reference": "0d9f1593efcc8b0b814ede35a29a076ecd4231d4",
                 "shasum": ""
             },
             "require": {
@@ -127,9 +127,8 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^v3.17.0",
                 "phpstan/phpstan": "^1.10.15",
-                "pocketmine/pocketmine-mp": "dev-stable"
+                "pocketmine/pocketmine-mp": "dev-legacy/pm4"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -139,6 +138,9 @@
             "scripts": {
                 "analyze": [
                     "./vendor/bin/phpstan analyze"
+                ],
+                "run-cs-fixer": [
+                    "./vendor/bin/php-cs-fixer fix --diff --ansi"
                 ]
             },
             "license": [
@@ -152,10 +154,10 @@
             ],
             "description": "A PocketMine-MP library for registering commands with proper overloads",
             "support": {
-                "source": "https://github.com/Valiant-Bedrock/libcommand/tree/master",
+                "source": "https://github.com/Valiant-Bedrock/libcommand/tree/legacy/pm4",
                 "issues": "https://github.com/Valiant-Bedrock/libcommand/issues"
             },
-            "time": "2023-05-27T22:37:22+00:00"
+            "time": "2023-06-28T19:39:10+00:00"
         }
     ],
     "packages-dev": [
@@ -2120,12 +2122,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/diff.git",
-                "reference": "022f5368daf850addc61eb26575d756fb8eb380a"
+                "reference": "84a26bff4c2f3f886c3ce083f9b632fcb314b27c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/022f5368daf850addc61eb26575d756fb8eb380a",
-                "reference": "022f5368daf850addc61eb26575d756fb8eb380a",
+                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/84a26bff4c2f3f886c3ce083f9b632fcb314b27c",
+                "reference": "84a26bff4c2f3f886c3ce083f9b632fcb314b27c",
                 "shasum": ""
             },
             "require": {
@@ -2180,7 +2182,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-25T17:45:51+00:00"
+            "time": "2023-06-28T04:54:58+00:00"
         },
         {
             "name": "symfony/console",
