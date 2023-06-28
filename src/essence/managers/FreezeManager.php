@@ -27,7 +27,7 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\player\Player;
 
-final class FreezeManager implements Manageable, Listener {
+final class FreezeManager extends Manageable implements Listener {
 	protected const MOVE_THRESHOLD = 0.25;
 
 	/** @var array<string, true> */
