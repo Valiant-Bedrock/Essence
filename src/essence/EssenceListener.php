@@ -18,9 +18,6 @@ use essence\translation\EssenceTranslationFactory;
 use essence\translation\TranslationHandler;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\event\player\PlayerLoginEvent;
-use pocketmine\event\player\PlayerQuitEvent;
-use SOFe\AwaitGenerator\Await;
 use function strlen;
 
 final readonly class EssenceListener implements Listener {
@@ -40,13 +37,5 @@ final readonly class EssenceListener implements Listener {
 			player: $event->getPlayer()->getName(),
 			message: $event->getMessage(),
 		)));
-	}
-
-	public function handleLoadOnLogin(PlayerLoginEvent $event): void {
-		Await::g2c($this->plugin->loadPlayerData($event->getPlayer()));
-	}
-
-	public function handleSaveOnQuit(PlayerQuitEvent $event): void {
-		Await::g2c($this->plugin->savePlayerData($event->getPlayer()));
 	}
 }

@@ -15,6 +15,7 @@ namespace essence\command;
 
 use essence\EssenceBase;
 use essence\EssencePermissions;
+use essence\managers\RoleManager;
 use essence\player\EssenceDataException;
 use essence\player\EssencePlayerData;
 use essence\role\EssenceRole;
@@ -100,8 +101,11 @@ final class SetRoleCommand extends ConsoleCommand {
 	public function setRoleByUserName(ConsoleCommandSender $sender, string $username, EssenceRole $role): Generator {
 		try {
 			// fetch player data to ensure they exist
-			/** @var EssencePlayerData $data */
-			$data = yield from $this->plugin->resolvePlayerDataFromUsername(username: $username);
+			/** @var ?EssencePlayerData $data */
+			$data = yield from $this->plugin->fetchManager(RoleManager::class)->resolvePlayerDataFromUsername(username: $username);
+			if ($data === null) {
+				throw new EssenceDataException("Player data not found");
+			}
 			$data->role = $role;
 			// save to database
 			yield from $data->saveToDatabase();
