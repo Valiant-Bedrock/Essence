@@ -101,11 +101,8 @@ final class SetRoleCommand extends ConsoleCommand {
 	public function setRoleByUserName(ConsoleCommandSender $sender, string $username, EssenceRole $role): Generator {
 		try {
 			// fetch player data to ensure they exist
-			/** @var ?EssencePlayerData $data */
+			/** @var EssencePlayerData $data */
 			$data = yield from $this->plugin->fetchManager(RoleManager::class)->resolvePlayerDataFromUsername(username: $username);
-			if ($data === null) {
-				throw new EssenceDataException("Player data not found");
-			}
 			$data->role = $role;
 			// save to database
 			yield from $data->saveToDatabase();
