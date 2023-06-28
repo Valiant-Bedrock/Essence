@@ -14,9 +14,24 @@ declare(strict_types=1);
 namespace essence\managers;
 
 use essence\EssenceBase;
+use PrefixedLogger;
 
-interface Manageable {
-	public function onEnable(EssenceBase $plugin): void;
+abstract class Manageable {
+	protected readonly PrefixedLogger $logger;
 
-	public function onDisable(EssenceBase $plugin): void;
+	public function __construct(protected readonly EssenceBase $plugin) {
+		$this->logger = new PrefixedLogger($plugin->getLogger(), static::class);
+	}
+
+	public function getLogger(): PrefixedLogger {
+		return $this->logger;
+	}
+
+	public function getPlugin(): EssenceBase {
+		return $this->plugin;
+	}
+
+	public abstract function onEnable(EssenceBase $plugin): void;
+
+	public abstract function onDisable(EssenceBase $plugin): void;
 }
