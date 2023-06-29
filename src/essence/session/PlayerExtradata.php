@@ -23,6 +23,8 @@ final class PlayerExtradata {
 		#[Field(name: "DeviceId")] public readonly string $deviceId,
 		#[Field(name: "UIProfile")] public readonly int $uiProfile,
 		#[Field(name: "GuiScale")] public readonly int $guiScale,
+		#[Field(name: "DeviceOS", parser: DeviceOSParser::class)] public readonly DeviceOS $deviceOS,
+		#[Field(name: "CurrentInputMode", parser: InputModeParser::class)] public readonly InputMode $currentInputMode,
 	) {
 	}
 

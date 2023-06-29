@@ -24,13 +24,12 @@ use essence\player\EssenceDataException;
 use essence\player\EssencePlayerData;
 use essence\role\EssenceRole;
 use Generator;
+use libMarshal\exception\UnmarshalException;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\Player;
-use pocketmine\utils\AssumptionFailedError;
 use function array_combine;
 use function array_fill;
 use function count;
-use function intval;
 
 final class PlayerSession {
 
@@ -60,21 +59,22 @@ final class PlayerSession {
 	 * @throws EssenceDataException
 	 */
 	public static function create(Player $player): Generator {
-		$info = $player->getNetworkSession()->getPlayerInfo() ?? throw new AssumptionFailedError("Player info shouldn't be null");
-		$extraData = $info->getExtraData();
-		/**
-		 * @var string $deviceOS
-		 * @var string $inputMode
-		 */
-		["DeviceOS" => $deviceOS, "CurrentInputMode" => $inputMode] = $extraData;
-		/** @var EssencePlayerData $data */
-		$data = yield from EssencePlayerData::fromDatabase($player);
-		return new self(
-			player: $player,
-			data: $data,
-			deviceOS: DeviceOS::from(intval($deviceOS)),
-			inputMode: InputMode::from(intval($inputMode))
-		);
+		try {
+			$info = $player->getNetworkSession()->getPlayerInfo() ?? throw new EssenceDataException("PlayerInfo not found for {$player->getName()}");
+			$extraData = PlayerExtradata::unmarshal($info->getExtraData());
+			/** @var EssencePlayerData $data */
+			$data = yield from EssencePlayerData::fromDatabase($player, $extraData);
+			// ensure fields are up to date
+			yield from $data->updateIdentity($player, $extraData);
+			return new self(
+				player: $player,
+				data: $data,
+				deviceOS: $extraData->deviceOS,
+				inputMode: $extraData->currentInputMode,
+			);
+		} catch (UnmarshalException $exception) {
+			throw new EssenceDataException($exception->getMessage(), $exception->getCode(), $exception);
+		}
 	}
 
 	/**
