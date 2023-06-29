@@ -119,6 +119,9 @@ final class BanCommand extends Command {
 
 	private function resolveCharToModifier(string $char, int $value): ?string {
 		return match ($char) {
+			"y" => "+$value years",
+			"M" => "+$value months",
+			"w" => "+$value weeks",
 			"d" => "+$value days",
 			"h" => "+$value hours",
 			"m" => "+$value minutes",
