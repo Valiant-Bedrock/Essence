@@ -22,8 +22,12 @@ use libcommand\Overload;
 use libcommand\parameter\types\TargetParameter;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\player\Player;
@@ -73,9 +77,37 @@ final class FreezeManager extends Manageable implements Listener {
 		}
 	}
 
-	public function handlePlayerDamage(EntityDamageEvent $event): void {
+	public function handleIncomingDamage(EntityDamageEvent $event): void {
 		$victim = $event->getEntity();
 		if ($victim instanceof Player && $this->isFrozen($victim) && $event->getCause() !== EntityDamageEvent::CAUSE_SUICIDE) {
+			$event->cancel();
+		}
+	}
+
+	public function handleOutgoingDamage(EntityDamageByEntityEvent $event): void {
+		$damager = $event->getDamager();
+		if ($damager instanceof Player && $this->isFrozen($damager)) {
+			$event->cancel();
+		}
+	}
+
+	public function handleBlockBreak(BlockBreakEvent $event): void {
+		$player = $event->getPlayer();
+		if ($this->isFrozen($player)) {
+			$event->cancel();
+		}
+	}
+
+	public function handleBlockPlace(BlockPlaceEvent $event): void {
+		$player = $event->getPlayer();
+		if ($this->isFrozen($player)) {
+			$event->cancel();
+		}
+	}
+
+	public function handleInteract(PlayerInteractEvent $event): void {
+		$player = $event->getPlayer();
+		if ($this->isFrozen($player)) {
 			$event->cancel();
 		}
 	}
