@@ -32,7 +32,7 @@ REPLACE INTO player_bans (username, xuid, ip_address, device_id, reason, creatio
 -- # 	   :xuid string
 -- #       :ip_address string
 -- #       :device_id string
-SELECT * FROM player_bans WHERE username = :username OR xuid = :xuid OR ip_address = :ip_address OR device_id = :device_id
+SELECT * FROM player_bans WHERE LOWER(username) = LOWER(:username) OR xuid = :xuid OR ip_address = :ip_address OR device_id = :device_id
 -- #    }
 -- #    { update
 -- #       :username string
