@@ -30,7 +30,6 @@ use pocketmine\player\Player;
 use RuntimeException;
 use SOFe\AwaitGenerator\Await;
 use function array_search;
-use function count;
 use function in_array;
 
 final class BanManager extends Manageable implements Listener {
@@ -124,7 +123,12 @@ final class BanManager extends Manageable implements Listener {
 	public function isBanned(string $username): Generator {
 		try {
 			$bans = yield from Ban::fromUsername(username: $username);
-			return count($bans) > 0;
+			foreach ($bans as $ban) {
+				if ($ban->isCurrent()) {
+					return true;
+				}
+			}
+			return false;
 		} catch (RuntimeException) {
 			return false;
 		}
@@ -175,7 +179,7 @@ final class BanManager extends Manageable implements Listener {
 					$ban->replaceMissingData($player->getXuid(), $player->getNetworkSession()->getIp(), $extraData->deviceId);
 					$this->getLogger()->warning("Missing data for ban entry: $ban");
 					$this->getLogger()->warning("Updating ban entry...");
-					yield from $ban->saveToDatabase();
+					yield from $ban->updateInDatabase();
 					return;
 				}
 				$comparedBan = $this->fromCurrent(

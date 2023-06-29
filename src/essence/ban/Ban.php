@@ -108,6 +108,15 @@ final class Ban {
 		);
 	}
 
+	public function updateInDatabase(): Generator {
+		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeGeneric(
+			queryName: EssenceDatabaseKeys::BANS_UPDATE,
+			args: $this->marshal(),
+			onSuccess: fn () => $resolve(true),
+			onError: fn (Throwable $error) => $reject(new EssenceDataException($error->getMessage()))
+		));
+	}
+
 	/**
 	 * @throws UnmarshalException
 	 */

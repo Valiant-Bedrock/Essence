@@ -19,6 +19,7 @@ final class EssenceDatabaseKeys {
 	public const PLAYER_SAVE = "player.save";
 	public const BANS_SAVE = "bans.save";
 	public const BANS_LOAD = "bans.load";
+	public const BANS_UPDATE = "bans.update";
 
 	private function __construct() {
 	}
