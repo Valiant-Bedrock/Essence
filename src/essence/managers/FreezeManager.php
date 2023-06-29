@@ -22,6 +22,7 @@ use libcommand\Overload;
 use libcommand\parameter\types\TargetParameter;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
@@ -69,6 +70,13 @@ final class FreezeManager extends Manageable implements Listener {
 	public function handleJoin(PlayerJoinEvent $event): void {
 		if ($this->isFrozen($event->getPlayer())) {
 			$this->freeze($event->getPlayer());
+		}
+	}
+
+	public function handlePlayerDamage(EntityDamageEvent $event): void {
+		$victim = $event->getEntity();
+		if ($victim instanceof Player && $this->isFrozen($victim) && $event->getCause() !== EntityDamageEvent::CAUSE_SUICIDE) {
+			$event->cancel();
 		}
 	}
 
