@@ -20,11 +20,8 @@ declare(strict_types=1);
 namespace essence\session;
 
 use essence\utils\Icons;
-use essence\utils\ResolveEnumByNameTrait;
 
 enum InputMode: int {
-	use ResolveEnumByNameTrait;
-
 	case MOUSE_KEYBOARD = 1;
 	case TOUCHSCREEN = 2;
 	case GAME_PAD = 3;

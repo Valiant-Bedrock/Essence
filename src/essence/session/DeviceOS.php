@@ -12,11 +12,7 @@ declare(strict_types=1);
 
 namespace essence\session;
 
-use essence\utils\ResolveEnumByNameTrait;
-
 enum DeviceOS: int {
-	use ResolveEnumByNameTrait;
-
 	case UNKNOWN = -1;
 	case ANDROID = 1;
 	case IOS = 2;
