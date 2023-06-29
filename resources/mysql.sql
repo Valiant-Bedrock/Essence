@@ -4,7 +4,9 @@
 -- # 	   :uuid string
 -- #       :role_name string
 -- #       :username string
-REPLACE INTO player_data (uuid, role_name, username) VALUES (:uuid, :role_name, :username)
+-- #       :xuid string
+-- #       :device_id string
+REPLACE INTO player_data (uuid, role_name, username, xuid, device_id) VALUES (:uuid, :role_name, :username, :xuid, :device_id)
 -- #    }
 -- #    { load
 -- # 	  :uuid string

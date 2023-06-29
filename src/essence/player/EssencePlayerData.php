@@ -17,6 +17,7 @@ use essence\EssenceBase;
 use essence\EssenceDatabaseKeys;
 use essence\role\EssenceRole;
 use essence\role\EssenceRoleParser;
+use essence\session\PlayerExtradata;
 use Generator;
 use libMarshal\attributes\Field;
 use libMarshal\exception\UnmarshalException;
@@ -33,16 +34,28 @@ final class EssencePlayerData {
 		#[Field] public string $uuid,
 		#[Field(name: "role_name", parser: EssenceRoleParser::class)] public EssenceRole $role,
 		#[Field] public string $username,
+		#[Field(name: "xuid")] public string $xuid,
+		#[Field(name: "device_id")] public string $deviceId,
 	) {
 	}
 
-	public static function fromDatabase(Player $player): Generator {
+	public static function fromDatabase(Player $player, PlayerExtradata $extraData): Generator {
 		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeSelect(
 			queryName: EssenceDatabaseKeys::PLAYER_LOAD,
 			args: ["uuid" => $player->getUniqueId()->toString()],
-			onSelect: fn (array $rows) => $resolve(count($rows) === 1 ? self::unmarshal($rows[0], false) : self::default($player)),
+			onSelect: fn (array $rows) => $resolve(count($rows) === 1 ? self::unmarshal($rows[0], false) : self::default($player, $extraData)),
 			onError: fn (Throwable $throwable) => $reject(new EssenceDataException($throwable->getMessage()))
 		));
+	}
+
+	public function updateIdentity(Player $player, PlayerExtradata $extraData): Generator {
+		// don't save row if nothing has changed
+		if ($this->deviceId === $extraData->deviceId && $this->xuid === $player->getXuid()) {
+			return true;
+		}
+		$this->deviceId = $extraData->deviceId;
+		$this->xuid = $player->getXuid();
+		return yield from $this->saveToDatabase();
 	}
 
 	/**
@@ -57,11 +70,13 @@ final class EssencePlayerData {
 		));
 	}
 
-	public static function default(Player $player): self {
+	public static function default(Player $player, PlayerExtradata $extraData): self {
 		return new EssencePlayerData(
 			uuid: $player->getUniqueId()->toString(),
 			role: EssenceRole::USER(),
 			username: $player->getName(),
+			xuid: $player->getXuid(),
+			deviceId: $extraData->deviceId
 		);
 	}
 }
