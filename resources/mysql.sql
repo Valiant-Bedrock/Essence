@@ -15,3 +15,25 @@ SELECT * FROM player_data WHERE uuid = :uuid
 SELECT * FROM player_data WHERE username = :username
 -- #    }
 -- #}
+-- #{ bans
+-- #    { save
+-- #       :username string
+-- # 	   :xuid string
+-- #       :ip_address string
+-- #       :device_id string
+-- #       :reason string
+-- #       :creation_time string
+-- #       :expiry_time string
+-- #       :banned_by string
+-- #       :unbanned_by string
+-- #       :ban_id int
+REPLACE INTO player_bans (username, xuid, ip_address, device_id, reason, creation_time, expiry_time, banned_by, unbanned_by, ban_id) VALUES (:username, :xuid, :ip_address, :device_id, :reason, :creation_time, :expiry_time, :banned_by, :unbanned_by, :ban_id)
+-- #    }
+-- #    { load
+-- #       :username string
+-- # 	   :xuid string
+-- #       :ip_address string
+-- #       :device_id string
+SELECT * FROM player_bans WHERE username = :username OR xuid = :xuid OR ip_address = :ip_address OR device_id = :device_id
+-- #    }
+-- #}

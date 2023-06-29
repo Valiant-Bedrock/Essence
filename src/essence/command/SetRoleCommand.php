@@ -37,7 +37,6 @@ use function array_map;
 final class SetRoleCommand extends ConsoleCommand {
 
 	public function __construct(public readonly EssenceBase $plugin) {
-		$roleEnum = array_map(fn (EssenceRole $role) => $role->name, EssenceRole::getAll());
 		parent::__construct(
 			name: "setrole",
 			description: "Sets the role of a player",
@@ -45,7 +44,12 @@ final class SetRoleCommand extends ConsoleCommand {
 			overloads: [
 				new Overload(name: "default", parameters: [
 					new StringParameter(name: "player", optional: false),
-					new EnumParameter(name: "role", enumName: "role", enumValues: $roleEnum, optional: false)
+					new EnumParameter(
+						name: "role",
+						enumName: "role",
+						enumValues: array_map(fn (EssenceRole $role) => $role->name, EssenceRole::getAll()),
+						optional: false
+					)
 				])
 			],
 			permission: (string) EssencePermissions::COMMAND_SETROLE()

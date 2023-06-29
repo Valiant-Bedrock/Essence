@@ -12,18 +12,23 @@ declare(strict_types=1);
 
 namespace essence;
 
+use essence\ban\BanManager;
 use essence\managers\FreezeManager;
 use essence\managers\Manageable;
 use essence\managers\RoleManager;
+use essence\translation\TranslationHandler;
 use libcommand\LibCommandBase;
 use libcommand\VanillaCommandPatcher;
 use pocketmine\command\Command;
+use pocketmine\lang\Translatable;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
 use poggit\libasynql\DataConnector;
 use poggit\libasynql\libasynql;
 use RuntimeException;
+use function array_filter;
 use function array_rand;
 use function assert;
 use function basename;
@@ -32,7 +37,7 @@ final class EssenceBase extends PluginBase {
 	use SingletonTrait;
 
 	/** @var array<class-string<Manageable>> */
-	private const MANAGERS = [FreezeManager::class, RoleManager::class];
+	private const MANAGERS = [BanManager::class, FreezeManager::class, RoleManager::class];
 	public const MOTD_PREFIX = TextFormat::RED . TextFormat::BOLD . "Valiant" . TextFormat::RESET . TextFormat::WHITE . " - ";
 	public const MOTD_MESSAGES = ["&eNOW IN BETA!"];
 
@@ -97,8 +102,25 @@ final class EssenceBase extends PluginBase {
 		$killCommand->setPermission((string) EssencePermissions::COMMAND_KILL());
 	}
 
-	private function mustGetCommand(string $name): Command {
+	public function mustGetCommand(string $name): Command {
 		return $this->getServer()->getCommandMap()->getCommand($name) ?? throw new RuntimeException("Command $name not found");
+	}
+
+	/**
+	 * @return Player[]
+	 */
+	public function getPlayersByPermission(string $permission): array {
+		return array_filter(
+			array: $this->getServer()->getOnlinePlayers(),
+			callback: fn (Player $player) => $player->hasPermission($permission)
+		);
+	}
+
+	public function broadcastMessageByPermission(Translatable|string $message, string $permission): void {
+		$this->getServer()->broadcastMessage(
+			message: $message instanceof Translatable ? TranslationHandler::getInstance()->translate($message) : $message,
+			recipients: $this->getPlayersByPermission($permission)
+		);
 	}
 
 	private function setupEnvironmentMode(): void {
