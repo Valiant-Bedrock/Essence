@@ -122,6 +122,7 @@ final class BanManager extends Manageable implements Listener {
 
 	public function isBanned(string $username): Generator {
 		try {
+			/** @var Ban[] $bans */
 			$bans = yield from Ban::fromUsername(username: $username);
 			foreach ($bans as $ban) {
 				if ($ban->isCurrent()) {

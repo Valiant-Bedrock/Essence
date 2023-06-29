@@ -100,12 +100,14 @@ final class Ban {
 	}
 
 	public static function fromUsername(string $username): Generator {
-		return yield from self::fromDatabase(
-			username: $username,
-			xuid: "",
-			ipAddress: "",
-			deviceId: ""
-		);
+		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeSelect(
+			queryName: EssenceDatabaseKeys::BANS_LOAD_BY_USERNAME,
+			args: [
+				"username" => $username,
+			],
+			onSelect: fn (array $rows) => $resolve(array_map(fn (array $row) => self::unmarshal($row, false), $rows)),
+			onError: fn (Throwable $throwable) => $reject(new EssenceDataException($throwable->getMessage()))
+		));
 	}
 
 	public function updateInDatabase(): Generator {
