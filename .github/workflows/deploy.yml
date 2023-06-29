@@ -33,7 +33,7 @@ jobs:
         run: |
           rm ${{ env.PHP_DOWNLOAD_NAME }}
           rm ${{ env.PHP_ARTIFACT_NAME }}
-          rm install.log
+          rm -f -- install.log
       - name: Install Composer
         run: curl -sS https://getcomposer.org/installer | ${{ env.PHP_BINARY_PATH }}
       - name: Install Composer dependencies
