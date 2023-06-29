@@ -37,7 +37,7 @@ final class BanCommand extends Command {
 		parent::__construct(
 			name: "ban",
 			description: "Ban a player from the server",
-			usageMessage: "/ban <username> <duration> <reason>",
+			usageMessage: "/ban <username> <reason> <duration>",
 			overloads: [
 				new Overload(name: "default", parameters: [
 					new StringParameter(name: "username"),
