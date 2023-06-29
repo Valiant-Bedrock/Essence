@@ -23,16 +23,18 @@ use libMarshal\parser\Parseable;
 final class DateTimeParser implements Parseable {
 
 	/**
-	 * @param string $value
+	 * @param ?string $value
 	 */
-	public function parse(mixed $value): DateTime {
-		return DateTime::createFromFormat("Y-m-d H:i:s", $value) ?: throw new UnmarshalException("Failed to parse DateTime");
+	public function parse(mixed $value): ?DateTime {
+		return $value !== null ?
+			DateTime::createFromFormat("Y-m-d H:i:s", $value) ?: throw new UnmarshalException("Failed to parse DateTime") :
+			null;
 	}
 
 	/**
-	 * @param DateTime $value
+	 * @param ?DateTime $value
 	 */
 	public function serialize(mixed $value): string {
-		return $value->format("Y-m-d H:i:s");
+		return $value !== null ? $value->format("Y-m-d H:i:s") : "";
 	}
 }
