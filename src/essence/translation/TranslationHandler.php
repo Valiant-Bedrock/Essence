@@ -52,7 +52,7 @@ final class TranslationHandler {
 		return new self(array_combine(
 			keys: array_keys($data),
 			values: array_map(
-				callback: fn (string $message) => TextFormat::colorize($message),
+				callback: fn (string $message) => TextFormat::colorize(str_replace("\\n", TextFormat::EOL, $message)),
 				array: $data
 			)
 		));
