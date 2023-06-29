@@ -29,8 +29,6 @@ use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\player\Player;
 use RuntimeException;
 use SOFe\AwaitGenerator\Await;
-use function array_search;
-use function in_array;
 
 final class BanManager extends Manageable implements Listener {
 
@@ -88,7 +86,7 @@ final class BanManager extends Manageable implements Listener {
 					continue;
 				}
 				$ban->unbannedBy = $unbannedBy->getName();
-				yield from $ban->saveToDatabase();
+				yield from $ban->updateInDatabase();
 				$this->removeBan($ban);
 				return true;
 			}
@@ -108,15 +106,19 @@ final class BanManager extends Manageable implements Listener {
 	}
 
 	public function insertBan(Ban $ban): void {
-		if (!in_array(needle: $ban, haystack: $this->bans, strict: true)) {
-			$this->bans[] = $ban;
+		foreach ($this->bans as $current) {
+			if ($ban->equals($current)) {
+				return;
+			}
 		}
+		$this->bans[] = $ban;
 	}
 
 	public function removeBan(Ban $ban): void {
-		$key = array_search(needle: $ban, haystack: $this->bans, strict: true);
-		if ($key !== false) {
-			unset($this->bans[$key]);
+		foreach($this->bans as $key => $current) {
+			if ($ban->equals($current)) {
+				unset($this->bans[$key]);
+			}
 		}
 	}
 
