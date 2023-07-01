@@ -11,9 +11,8 @@ declare(strict_types=1);
  * @author sylvrs
  */
 
-namespace essence\managers;
+namespace essence;
 
-use essence\EssenceBase;
 use PrefixedLogger;
 
 abstract class Manageable {

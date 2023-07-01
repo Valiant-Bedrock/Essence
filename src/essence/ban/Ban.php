@@ -19,6 +19,7 @@ use essence\EssenceBase;
 use essence\EssenceDatabaseKeys;
 use essence\player\EssenceDataException;
 use essence\session\PlayerExtradata;
+use essence\utils\DateTimeParser;
 use Generator;
 use libMarshal\attributes\Field;
 use libMarshal\exception\UnmarshalException;
@@ -27,6 +28,7 @@ use pocketmine\player\Player;
 use SOFe\AwaitGenerator\Await;
 use Throwable;
 use function array_map;
+
 final class Ban {
 	use MarshalTrait;
 
@@ -82,7 +84,7 @@ final class Ban {
 	}
 
 	public function __toString(): string {
-		return "$this->username ($this->xuid) banned by $this->bannedBy for $this->reason until {$this->getExpiryAsString()}";
+		return "$this->username (XUID: $this->xuid) banned by $this->bannedBy for $this->reason until {$this->getExpiryAsString()}";
 	}
 
 	public static function fromDatabase(string $username, string $xuid, string $ipAddress, string $deviceId): Generator {

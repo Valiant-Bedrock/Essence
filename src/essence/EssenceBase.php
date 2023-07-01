@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace essence;
 
 use essence\ban\BanManager;
-use essence\managers\FreezeManager;
-use essence\managers\Manageable;
-use essence\managers\RoleManager;
+use essence\role\RoleManager;
 use essence\translation\TranslationHandler;
 use libcommand\LibCommandBase;
 use libcommand\VanillaCommandPatcher;

@@ -34,6 +34,7 @@ use function str_split;
 final class BanCommand extends Command {
 	public function __construct(private readonly EssenceBase $plugin) {
 		$plugin->getServer()->getCommandMap()->unregister($plugin->mustGetCommand("ban"));
+		$plugin->getServer()->getCommandMap()->unregister($plugin->mustGetCommand("ban-ip"));
 		parent::__construct(
 			name: "ban",
 			description: "Ban a player from the server",

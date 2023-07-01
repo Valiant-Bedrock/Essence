@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author sylvrs
  */
 
-namespace essence\ban;
+namespace essence\utils;
 
 use DateTime;
 use libMarshal\exception\UnmarshalException;

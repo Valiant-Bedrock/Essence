@@ -17,7 +17,7 @@ use DateTime;
 use essence\command\BanCommand;
 use essence\command\UnbanCommand;
 use essence\EssenceBase;
-use essence\managers\Manageable;
+use essence\Manageable;
 use essence\session\PlayerExtradata;
 use essence\translation\EssenceTranslationFactory;
 use essence\translation\TranslationHandler;

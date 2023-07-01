@@ -15,10 +15,10 @@ namespace essence\command;
 
 use essence\EssenceBase;
 use essence\EssencePermissions;
-use essence\managers\RoleManager;
 use essence\player\EssenceDataException;
 use essence\player\EssencePlayerData;
 use essence\role\EssenceRole;
+use essence\role\RoleManager;
 use essence\session\PlayerSessionManager;
 use essence\translation\EssenceTranslationFactory;
 use essence\translation\TranslationHandler;

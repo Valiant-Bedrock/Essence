@@ -11,10 +11,8 @@ declare(strict_types=1);
  * @author sylvrs
  */
 
-namespace essence\managers;
+namespace essence;
 
-use essence\EssenceBase;
-use essence\EssencePermissions;
 use essence\translation\EssenceTranslationFactory;
 use essence\translation\TranslationHandler;
 use libcommand\ClosureCommand;

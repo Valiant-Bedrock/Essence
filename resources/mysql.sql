@@ -9,8 +9,8 @@
 REPLACE INTO player_data (uuid, role_name, username, xuid, device_id) VALUES (:uuid, :role_name, :username, :xuid, :device_id)
 -- #    }
 -- #    { load
--- # 	  :uuid string
-SELECT * FROM player_data WHERE uuid = :uuid
+-- # 	  :xuid string
+SELECT * FROM player_data WHERE xuid = :xuid
 -- #    }
 -- #    { load_by_username
 -- # 	  :username string

@@ -11,12 +11,13 @@ declare(strict_types=1);
  * @author sylvrs
  */
 
-namespace essence\managers;
+namespace essence\role;
 
 use Closure;
 use essence\command\SetRoleCommand;
 use essence\EssenceBase;
 use essence\EssenceDatabaseKeys;
+use essence\Manageable;
 use essence\player\EssenceDataException;
 use essence\player\EssencePlayerData;
 use essence\session\PlayerSessionManager;
