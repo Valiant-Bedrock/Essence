@@ -39,6 +39,7 @@ final class EssenceRole {
 			permissions: [
 				"uhc.command.bypass",
 				"uhc.command.create",
+				(string) EssencePermissions::COMMAND_BAN(),
 				(string) EssencePermissions::COMMAND_FREEZE(),
 				(string) EssencePermissions::COMMAND_KILL(),
 				DefaultPermissionNames::COMMAND_BAN_IP,
@@ -49,6 +50,8 @@ final class EssenceRole {
 				DefaultPermissionNames::COMMAND_ENCHANT,
 				DefaultPermissionNames::COMMAND_GIVE,
 				DefaultPermissionNames::COMMAND_GAMEMODE,
+				DefaultPermissionNames::COMMAND_GAMEMODE_SELF,
+				DefaultPermissionNames::COMMAND_GAMEMODE_OTHER,
 				DefaultPermissionNames::COMMAND_KICK,
 				DefaultPermissionNames::COMMAND_WHITELIST_ENABLE,
 				DefaultPermissionNames::COMMAND_WHITELIST_DISABLE,
@@ -70,6 +73,7 @@ final class EssenceRole {
 			permissions: [
 				"uhc.command.bypass",
 				"uhc.command.create",
+				(string) EssencePermissions::COMMAND_BAN(),
 				(string) EssencePermissions::COMMAND_FREEZE(),
 				(string) EssencePermissions::COMMAND_KILL(),
 				DefaultPermissionNames::COMMAND_BAN_IP,
@@ -80,6 +84,8 @@ final class EssenceRole {
 				DefaultPermissionNames::COMMAND_ENCHANT,
 				DefaultPermissionNames::COMMAND_GIVE,
 				DefaultPermissionNames::COMMAND_GAMEMODE,
+				DefaultPermissionNames::COMMAND_GAMEMODE_SELF,
+				DefaultPermissionNames::COMMAND_GAMEMODE_OTHER,
 				DefaultPermissionNames::COMMAND_KICK,
 				DefaultPermissionNames::COMMAND_WHITELIST_ENABLE,
 				DefaultPermissionNames::COMMAND_WHITELIST_DISABLE,
