@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * Copyright (C) 2020 - 2023 | Valiant Network
  *
@@ -10,6 +8,7 @@ declare(strict_types=1);
  *
  * @author sylvrs
  */
+declare(strict_types=1);
 
 namespace essence\ban;
 
@@ -70,6 +69,10 @@ final class Ban {
 		}
 	}
 
+	public function hasUsername(string $username): bool {
+		return $this->username === $username;
+	}
+
 	public function isAttachedTo(Player $player): bool {
 		try {
 			$extraData = PlayerExtradata::unmarshal($player->getPlayerInfo()->getExtraData());
@@ -104,9 +107,7 @@ final class Ban {
 	public static function fromUsername(string $username): Generator {
 		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeSelect(
 			queryName: EssenceDatabaseKeys::BANS_LOAD_BY_USERNAME,
-			args: [
-				"username" => $username,
-			],
+			args: ["username" => $username],
 			onSelect: fn (array $rows) => $resolve(array_map(fn (array $row) => self::unmarshal($row, false), $rows)),
 			onError: fn (Throwable $throwable) => $reject(new EssenceDataException($throwable->getMessage()))
 		));

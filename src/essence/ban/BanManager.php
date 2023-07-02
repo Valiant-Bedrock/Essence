@@ -13,11 +13,14 @@ declare(strict_types=1);
 
 namespace essence\ban;
 
+use Closure;
 use DateTime;
 use essence\command\BanCommand;
 use essence\command\UnbanCommand;
 use essence\EssenceBase;
+use essence\EssenceDatabaseKeys;
 use essence\Manageable;
+use essence\player\EssenceDataException;
 use essence\session\PlayerExtradata;
 use essence\translation\EssenceTranslationFactory;
 use essence\translation\TranslationHandler;
@@ -25,13 +28,18 @@ use Generator;
 use libMarshal\exception\UnmarshalException;
 use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\player\Player;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\utils\AssumptionFailedError;
 use RuntimeException;
 use SOFe\AwaitGenerator\Await;
+use Throwable;
+use function array_map;
+use function count;
 
 final class BanManager extends Manageable implements Listener {
-
+	protected const BAN_SYNC_TIME = 20 * 60;
 	/** @var array<Ban> */
 	private array $bans = [];
 
@@ -41,9 +49,34 @@ final class BanManager extends Manageable implements Listener {
 			new BanCommand($plugin),
 			new UnbanCommand($plugin),
 		]);
+		$plugin->getScheduler()->scheduleRepeatingTask(
+			task: new ClosureTask(function(): void { Await::g2c($this->syncBans()); }),
+			period: self::BAN_SYNC_TIME
+		);
 	}
 
 	public function onDisable(EssenceBase $plugin): void {
+	}
+
+	private function syncBans(): Generator {
+		$beforeCount = count($this->bans);
+		$this->bans = yield from $this->loadBans();
+		$afterCount = count($this->bans);
+		$this->getLogger()->debug("Synced bans. Before: $beforeCount, After: $afterCount");
+		if ($beforeCount !== $afterCount) {
+			$this->getLogger()->info(match (true) {
+				$afterCount > $beforeCount => "Loaded " . ($afterCount - $beforeCount) . " new ban(s)",
+				$afterCount < $beforeCount => "Removed " . ($beforeCount - $afterCount) . " ban(s)",
+				default => throw new AssumptionFailedError("Ban count did not change"),
+			});
+		}
+	}
+	public function loadBans(): Generator {
+		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeSelect(
+			queryName: EssenceDatabaseKeys::BANS_LOAD_ALL,
+			onSelect: fn (array $rows) => $resolve(array_map(fn (array $row) => Ban::unmarshal($row, false), $rows)),
+			onError: fn (Throwable $throwable) => $reject(new EssenceDataException($throwable->getMessage()))
+		));
 	}
 
 	public function ban(CommandSender $bannedBy, string $username, ?DateTime $expires, string $reason): Generator {
@@ -96,9 +129,9 @@ final class BanManager extends Manageable implements Listener {
 		}
 	}
 
-	public function fetchBan(Player $player): ?Ban {
+	public function fetchBan(string $username): ?Ban {
 		foreach ($this->bans as $ban) {
-			if ($ban->isCurrent() && $ban->isAttachedTo($player)) {
+			if ($ban->isCurrent() && $ban->hasUsername($username)) {
 				return $ban;
 			}
 		}
@@ -137,21 +170,24 @@ final class BanManager extends Manageable implements Listener {
 		}
 	}
 
-	public function handleLogin(PlayerLoginEvent $event): void {
-		// fetch in memory before going to DB
-		$ban = $this->fetchBan($event->getPlayer());
-		if ($ban !== null) {
-			$event->cancel();
-			$event->setKickMessage(TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
-				reason: $ban->reason,
-				expires: $ban->getExpiryAsString()
-			)));
+	public function handlePreLogin(PlayerPreLoginEvent $event): void {
+		$ban = $this->fetchBan($event->getPlayerInfo()->getUsername());
+		if ($ban === null) {
 			return;
 		}
-		Await::g2c($this->loadBansOnLogin($event->getPlayer()));
+		$event->setKickReason(
+			flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
+			message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
+				reason: $ban->reason,
+				expires: $ban->getExpiryAsString()
+			))
+		);
 	}
 
-	private function loadBansOnLogin(Player $player): Generator {
+	public function checkBans(Player $player): Generator {
+		// drop handler until verification
+		$handler = $player->getNetworkSession()->getHandler();
+		$player->getNetworkSession()->setHandler(null);
 		try {
 			if ($player->getXuid() === "") {
 				$player->kick(reason: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_xbox_required()));
@@ -204,7 +240,10 @@ final class BanManager extends Manageable implements Listener {
 			}
 		} catch (UnmarshalException) {
 			$player->kick(reason: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_data_failure()));
+		} finally {
+			$player->getNetworkSession()->setHandler($handler);
 		}
+
 	}
 
 	public function fromCurrent(string $username, string $ip, string $xuid, PlayerExtradata $extraData, Ban $previous): Ban {

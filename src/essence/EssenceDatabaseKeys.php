@@ -19,6 +19,7 @@ final class EssenceDatabaseKeys {
 	public const PLAYER_SAVE = "player.save";
 	public const BANS_SAVE = "bans.save";
 	public const BANS_LOAD = "bans.load";
+	public const BANS_LOAD_ALL = "bans.load_all";
 	public const BANS_LOAD_BY_USERNAME = "bans.load_by_username";
 	public const BANS_UPDATE = "bans.update";
 

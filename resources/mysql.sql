@@ -36,6 +36,9 @@ REPLACE INTO player_bans (username, xuid, ip_address, device_id, reason, creatio
 -- #       :device_id string
 SELECT * FROM player_bans WHERE LOWER(username) = LOWER(:username) OR xuid = :xuid OR ip_address = :ip_address OR device_id = :device_id
 -- #    }
+-- #    { load_all
+SELECT * FROM player_bans WHERE expiry_time IS NULL OR expiry_time > NOW()
+-- #    }
 -- #    { load_by_username
 -- #       :username string
 SELECT * FROM player_bans WHERE LOWER(username) = LOWER(:username)

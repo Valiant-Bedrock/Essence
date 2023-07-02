@@ -28,8 +28,9 @@ use poggit\libasynql\libasynql;
 use RuntimeException;
 use function array_filter;
 use function array_rand;
-use function assert;
 use function basename;
+
+require_once("EssenceAutoloader.php");
 
 final class EssenceBase extends PluginBase {
 	use SingletonTrait;
@@ -42,16 +43,20 @@ final class EssenceBase extends PluginBase {
 	/** @var array<class-string<Manageable>, Manageable> */
 	private array $managerInstances = [];
 
-	private static string $environmentMode = "development";
+	private EssenceEnvironment $environment;
 
 	private DataConnector $connector;
+
+	private EssenceLogForwarder $errorForwarder;
 
 	protected function onEnable(): void {
 		// setup instance and environment mode
 		self::setInstance($this);
-		$this->setupEnvironmentMode();
-		// setup database
 		$this->saveResource("config.yml");
+		$this->environment = EssenceEnvironment::unmarshal(
+			data: (array) $this->getConfig()->get("environment", []),
+		);
+		// setup database
 		$this->connector = libasynql::create(
 			plugin: $this,
 			configData: $this->getConfig()->get("database", []),
@@ -62,14 +67,24 @@ final class EssenceBase extends PluginBase {
 		// finish setup
 		$this->getServer()->getPluginManager()->registerEvents(listener: new EssenceListener($this), plugin: $this);
 		$this->getServer()->getNetwork()->setName(self::MOTD_PREFIX . TextFormat::colorize(self::MOTD_MESSAGES[array_rand(self::MOTD_MESSAGES)]));
+		$this->getServer()->getLogger()->addAttachment($this->errorForwarder = new EssenceLogForwarder($this));
 	}
 
 	protected function onDisable(): void {
 		$this->getConnector()->close();
+		$this->getServer()->getLogger()->removeAttachment($this->errorForwarder);
+	}
+
+	public function getEnvironment(): EssenceEnvironment {
+		return $this->environment;
 	}
 
 	public function getConnector(): DataConnector {
 		return $this->connector;
+	}
+
+	public function getErrorForwarder(): EssenceLogForwarder {
+		return $this->errorForwarder;
 	}
 
 	private function setupManagers(): void {
@@ -121,17 +136,11 @@ final class EssenceBase extends PluginBase {
 		);
 	}
 
-	private function setupEnvironmentMode(): void {
-		$mode = $this->getConfig()->getNested("environment.mode", "development");
-		assert($mode === "production" || $mode === "development");
-		self::$environmentMode = $mode;
-	}
-
 	public static function isProduction(): bool {
-		return self::$environmentMode === "production";
+		return self::getInstance()->getEnvironment()->mode === "production";
 	}
 
 	public static function isDevelopment(): bool {
-		return self::$environmentMode === "development";
+		return self::getInstance()->getEnvironment()->mode === "development";
 	}
 }
