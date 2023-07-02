@@ -6,6 +6,7 @@
   "require": {
     "php": ">=8.2",
     "valiant-bedrock/libcommand": "dev-legacy/pm4",
+    "valiant-bedrock/libdiscord": "dev-legacy/pm4",
     "sylvrs/libmarshal": ">=1.4.3",
     "sof3/await-generator": ">=3.5.2"
   },
@@ -31,6 +32,7 @@
     { "type": "vcs", "url": "git@github.com:NetherGamesMC/PocketMine-MP.git" },
     { "type": "vcs", "url": "git@github.com:NetherGamesMC/BedrockProtocol.git" },
     { "type": "vcs", "url": "git@github.com:NetherGamesMC/BedrockData.git" },
-    { "type": "vcs", "url": "git@github.com:Valiant-Bedrock/libcommand.git" }
+    { "type": "vcs", "url": "git@github.com:Valiant-Bedrock/libcommand.git" },
+    { "type": "vcs", "url": "git@github.com:Valiant-Bedrock/libDiscord.git" }
   ]
 }

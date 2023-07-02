@@ -1,5 +1,6 @@
 environment:
   mode: "development"
+  forwarding_id: ""
 database:
   type: mysql
   mysql:
