@@ -69,11 +69,11 @@ final class Ban {
 		}
 	}
 
-	public function hasUsername(string $username): bool {
-		return $this->username === $username;
+	public function isAttachedTo(string $username, string $xuid, string $address, string $deviceId): bool {
+		return $this->username === $username || $this->xuid === $xuid || $this->address === $address || $this->deviceId === $deviceId;
 	}
 
-	public function isAttachedTo(Player $player): bool {
+	public function isAttachedToPlayer(Player $player): bool {
 		try {
 			$extraData = PlayerExtradata::unmarshal($player->getPlayerInfo()->getExtraData());
 			return $this->xuid === $player->getXuid() || $this->address === $player->getNetworkSession()->getIp() || $this->deviceId === $extraData->deviceId;

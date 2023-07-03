@@ -133,10 +133,10 @@ final class BanManager extends Manageable implements Listener {
 	/**
 	 * @return array<Ban>
 	 */
-	public function fetchBans(string $username): array {
+	public function fetchBans(string $username, string $xuid, string $ipAddress, string $deviceId): array {
 		$bans = [];
 		foreach ($this->bans as $ban) {
-			if ($ban->isCurrent() && $ban->hasUsername($username)) {
+			if ($ban->isCurrent() && $ban->isAttachedTo($username, $xuid, $ipAddress, $deviceId)) {
 				$bans[] = $ban;
 			}
 		}
@@ -176,26 +176,23 @@ final class BanManager extends Manageable implements Listener {
 	}
 
 	public function handlePreLogin(PlayerPreLoginEvent $event): void {
-		$bans = $this->fetchBans($event->getPlayerInfo()->getUsername());
-		if (count($bans) === 0) {
+		$info = $event->getPlayerInfo();
+		if (!$info instanceof XboxLivePlayerInfo || $info->getXuid() === "") {
+			$event->setKickReason(
+				flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
+				message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_xbox_required())
+			);
 			return;
 		}
-		/** @var XboxLivePlayerInfo $info */
-		$info = $event->getPlayerInfo();
+
 		$extraData = PlayerExtradata::unmarshal($info->getExtraData());
+		$bans = $this->fetchBans($info->getUsername(), $info->getUsername(), $event->getIp(), $extraData->deviceId);
 		foreach ($bans as $ban) {
 			if (!$ban->isCurrent()) {
 				$this->removeBan($ban);
 				continue;
 			}
 
-			$event->setKickReason(
-				flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
-				message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
-					reason: $ban->reason,
-					expires: $ban->getExpiryAsString()
-				))
-			);
 			if ($ban->isMissingData()) {
 				$ban->replaceMissingData($info->getXuid(), $event->getIp(), $extraData->deviceId);
 				$this->getLogger()->warning("Missing data for ban entry: $ban");
@@ -211,13 +208,21 @@ final class BanManager extends Manageable implements Listener {
 				previous: $ban
 			);
 			if ($comparedBan->equals($ban)) {
-				continue;
+				return;
 			}
 			$this->getLogger()->warning("Potential ban evasion detected:");
 			$this->getLogger()->warning("Original ban: $ban");
 			$this->getLogger()->warning("Current ban: $comparedBan");
 			$this->getLogger()->warning("Creating new ban entry...");
 			Await::g2c($comparedBan->saveToDatabase());
+
+			$event->setKickReason(
+				flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
+				message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
+					reason: $ban->reason,
+					expires: $ban->getExpiryAsString()
+				))
+			);
 		}
 	}
 
