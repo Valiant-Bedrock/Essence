@@ -131,7 +131,6 @@ final class BanManager extends Manageable implements Listener {
 	}
 
 	/**
-	 * @param string $username
 	 * @return array<Ban>
 	 */
 	public function fetchBans(string $username): array {
