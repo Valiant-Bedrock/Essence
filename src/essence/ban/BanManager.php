@@ -30,6 +30,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\player\Player;
+use pocketmine\player\XboxLivePlayerInfo;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\AssumptionFailedError;
 use RuntimeException;
@@ -129,13 +130,18 @@ final class BanManager extends Manageable implements Listener {
 		}
 	}
 
-	public function fetchBan(string $username): ?Ban {
+	/**
+	 * @param string $username
+	 * @return array<Ban>
+	 */
+	public function fetchBans(string $username): array {
+		$bans = [];
 		foreach ($this->bans as $ban) {
 			if ($ban->isCurrent() && $ban->hasUsername($username)) {
-				return $ban;
+				$bans[] = $ban;
 			}
 		}
-		return null;
+		return $bans;
 	}
 
 	public function insertBan(Ban $ban): void {
@@ -171,17 +177,49 @@ final class BanManager extends Manageable implements Listener {
 	}
 
 	public function handlePreLogin(PlayerPreLoginEvent $event): void {
-		$ban = $this->fetchBan($event->getPlayerInfo()->getUsername());
-		if ($ban === null) {
+		$bans = $this->fetchBans($event->getPlayerInfo()->getUsername());
+		if (count($bans) === 0) {
 			return;
 		}
-		$event->setKickReason(
-			flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
-			message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
-				reason: $ban->reason,
-				expires: $ban->getExpiryAsString()
-			))
-		);
+		/** @var XboxLivePlayerInfo $info */
+		$info = $event->getPlayerInfo();
+		$extraData = PlayerExtradata::unmarshal($info->getExtraData());
+		foreach ($bans as $ban) {
+			if (!$ban->isCurrent()) {
+				$this->removeBan($ban);
+				continue;
+			}
+
+			$event->setKickReason(
+				flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
+				message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
+					reason: $ban->reason,
+					expires: $ban->getExpiryAsString()
+				))
+			);
+			if ($ban->isMissingData()) {
+				$ban->replaceMissingData($info->getXuid(), $event->getIp(), $extraData->deviceId);
+				$this->getLogger()->warning("Missing data for ban entry: $ban");
+				$this->getLogger()->warning("Updating ban entry...");
+				Await::g2c($ban->updateInDatabase());
+				return;
+			}
+			$comparedBan = $this->fromCurrent(
+				username: $info->getUsername(),
+				ip: $event->getIp(),
+				xuid: $info->getXuid(),
+				extraData: $extraData,
+				previous: $ban
+			);
+			if ($comparedBan->equals($ban)) {
+				continue;
+			}
+			$this->getLogger()->warning("Potential ban evasion detected:");
+			$this->getLogger()->warning("Original ban: $ban");
+			$this->getLogger()->warning("Current ban: $comparedBan");
+			$this->getLogger()->warning("Creating new ban entry...");
+			Await::g2c($comparedBan->saveToDatabase());
+		}
 	}
 
 	public function checkBans(Player $player): Generator {
