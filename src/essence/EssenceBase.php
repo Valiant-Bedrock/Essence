@@ -43,8 +43,7 @@ final class EssenceBase extends PluginBase {
 	/** @var array<class-string<Manageable>, Manageable> */
 	private array $managerInstances = [];
 
-	private EssenceEnvironment $environment;
-
+	private EssenceConfiguration $configuration;
 	private DataConnector $connector;
 
 	private EssenceLogForwarder $errorForwarder;
@@ -53,13 +52,11 @@ final class EssenceBase extends PluginBase {
 		// setup instance and environment mode
 		self::setInstance($this);
 		$this->saveResource("config.yml");
-		$this->environment = EssenceEnvironment::unmarshal(
-			data: (array) $this->getConfig()->get("environment", []),
-		);
+		$this->configuration = EssenceConfiguration::loadFromYaml($this->getConfig()->getPath());
 		// setup database
 		$this->connector = libasynql::create(
 			plugin: $this,
-			configData: $this->getConfig()->get("database", []),
+			configData: $this->configuration->databaseData,
 			sqlMap: ["mysql" => "mysql.sql"]
 		);
 		$this->setupManagers();
@@ -75,12 +72,16 @@ final class EssenceBase extends PluginBase {
 		$this->getServer()->getLogger()->removeAttachment($this->errorForwarder);
 	}
 
-	public function getEnvironment(): EssenceEnvironment {
-		return $this->environment;
-	}
-
 	public function getConnector(): DataConnector {
 		return $this->connector;
+	}
+
+	public function getConfiguration(): EssenceConfiguration {
+		return $this->configuration;
+	}
+
+	public function getEnvironment(): EssenceEnvironment {
+		return $this->configuration->environment;
 	}
 
 	public function getErrorForwarder(): EssenceLogForwarder {
@@ -134,13 +135,5 @@ final class EssenceBase extends PluginBase {
 			message: $message instanceof Translatable ? TranslationHandler::getInstance()->translate($message) : $message,
 			recipients: $this->getPlayersByPermission($permission)
 		);
-	}
-
-	public static function isProduction(): bool {
-		return self::getInstance()->getEnvironment()->mode === "production";
-	}
-
-	public static function isDevelopment(): bool {
-		return self::getInstance()->getEnvironment()->mode === "development";
 	}
 }
