@@ -187,35 +187,13 @@ final class BanManager extends Manageable implements Listener {
 
 		$extraData = PlayerExtradata::unmarshal($info->getExtraData());
 		$bans = $this->fetchBans($info->getUsername(), $info->getUsername(), $event->getIp(), $extraData->deviceId);
+		$this->getLogger()->debug("Found " . count($bans) . " ban(s) for player {$info->getUsername()}");
 		foreach ($bans as $ban) {
 			if (!$ban->isCurrent()) {
+				$this->getLogger()->debug("Removing non-current ban: $ban");
 				$this->removeBan($ban);
 				continue;
 			}
-
-			if ($ban->isMissingData()) {
-				$ban->replaceMissingData($info->getXuid(), $event->getIp(), $extraData->deviceId);
-				$this->getLogger()->warning("Missing data for ban entry: $ban");
-				$this->getLogger()->warning("Updating ban entry...");
-				Await::g2c($ban->updateInDatabase());
-				return;
-			}
-			$comparedBan = $this->fromCurrent(
-				username: $info->getUsername(),
-				ip: $event->getIp(),
-				xuid: $info->getXuid(),
-				extraData: $extraData,
-				previous: $ban
-			);
-			if ($comparedBan->equals($ban)) {
-				return;
-			}
-			$this->getLogger()->warning("Potential ban evasion detected:");
-			$this->getLogger()->warning("Original ban: $ban");
-			$this->getLogger()->warning("Current ban: $comparedBan");
-			$this->getLogger()->warning("Creating new ban entry...");
-			Await::g2c($comparedBan->saveToDatabase());
-
 			$event->setKickReason(
 				flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
 				message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
@@ -223,7 +201,32 @@ final class BanManager extends Manageable implements Listener {
 					expires: $ban->getExpiryAsString()
 				))
 			);
+			Await::g2c($this->checkBanDetails($ban, $info, $event->getIp(), $extraData));
 		}
+	}
+
+	private function checkBanDetails(Ban $ban, XboxLivePlayerInfo $info, string $ip, PlayerExtradata $extraData): Generator {
+		if ($ban->isMissingData()) {
+			$ban->replaceMissingData($info->getXuid(), $ip, $extraData->deviceId);
+			$this->getLogger()->warning("Missing data for ban entry: $ban");
+			$this->getLogger()->warning("Updating ban entry...");
+			return yield $ban->updateInDatabase();
+		}
+		$comparedBan = $this->fromCurrent(
+			username: $info->getUsername(),
+			ip: $ip,
+			xuid: $info->getXuid(),
+			extraData: $extraData,
+			previous: $ban
+		);
+		if ($comparedBan->equals($ban)) {
+			return false;
+		}
+		$this->getLogger()->warning("Potential ban evasion detected:");
+		$this->getLogger()->warning("Original ban: $ban");
+		$this->getLogger()->warning("Current ban: $comparedBan");
+		$this->getLogger()->warning("Creating new ban entry...");
+		return yield $comparedBan->saveToDatabase();
 	}
 
 	public function checkBans(Player $player): Generator {
