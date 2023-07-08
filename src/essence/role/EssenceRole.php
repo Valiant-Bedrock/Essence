@@ -25,7 +25,10 @@ use function strtolower;
  * We can always change it later but our use case doesn't call for being able to modify permissions on the fly.
  *
  * @method static self USER()
- * @method static self DEVELOPER()
+ * @method static self HOST()
+ * @method static self DESIGNER()
+ * @method static self MANAGER()
+ * @method static self EXECUTIVE()
  */
 final class EssenceRole {
 	use RegistryTrait;
