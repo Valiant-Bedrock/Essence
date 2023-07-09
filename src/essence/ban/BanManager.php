@@ -210,7 +210,7 @@ final class BanManager extends Manageable implements Listener {
 			$ban->replaceMissingData($info->getXuid(), $ip, $extraData->deviceId);
 			$this->getLogger()->warning("Missing data for ban entry: $ban");
 			$this->getLogger()->warning("Updating ban entry...");
-			return yield $ban->updateInDatabase();
+			return yield from $ban->updateInDatabase();
 		}
 		$comparedBan = $this->fromCurrent(
 			username: $info->getUsername(),
