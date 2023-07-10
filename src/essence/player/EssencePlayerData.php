@@ -43,7 +43,7 @@ final class EssencePlayerData {
 	public static function fromDatabase(Player $player, PlayerExtradata $extraData): Generator {
 		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeSelect(
 			queryName: EssenceDatabaseKeys::PLAYER_LOAD,
-			args: ["xuid" => $player->getXuid()],
+			args: ["uuid" => $player->getUniqueId()->toString()],
 			onSelect: fn (array $rows) => $resolve(count($rows) === 1 ? self::unmarshal($rows[0], false) : self::default($player, $extraData)),
 			onError: fn (Throwable $throwable) => $reject(new EssenceDataException($throwable->getMessage()))
 		));
