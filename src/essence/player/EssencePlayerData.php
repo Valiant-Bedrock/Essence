@@ -44,15 +44,12 @@ final class EssencePlayerData {
 		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeSelect(
 			queryName: EssenceDatabaseKeys::PLAYER_LOAD,
 			args: ["xuid" => $player->getXuid()],
-			onSelect: fn (array $rows) => $resolve(count($rows) === 1 ? self::unmarshal($rows[0], false) : self::default($player, $extraData)),
+			onSelect: fn (array $rows) => $resolve(count($rows) === 1 ? self::unmarshal($rows[0]) : self::default($player, $extraData)),
 			onError: fn (Throwable $throwable) => $reject(new EssenceDataException($throwable->getMessage()))
 		));
 	}
 
 	public function updateIdentity(Player $player, PlayerExtradata $extraData): Generator {
-		if ($this->deviceId === $extraData->deviceId && $this->xuid === $player->getXuid() && $this->lastIp === $player->getNetworkSession()->getIp()) {
-			return true;
-		}
 		$this->deviceId = $extraData->deviceId;
 		$this->xuid = $player->getXuid();
 		$this->lastIp = $player->getNetworkSession()->getIp();

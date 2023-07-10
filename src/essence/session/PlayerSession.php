@@ -65,7 +65,7 @@ final class PlayerSession {
 			/** @var EssencePlayerData $data */
 			$data = yield from EssencePlayerData::fromDatabase($player, $extraData);
 			// ensure fields are up-to-date
-			$success = yield from $data->updateInDatabase();
+			$success = yield from $data->updateIdentity($player, $extraData);
 			if (!$success) {
 				throw new EssenceDataException("Failed to update identity for {$player->getName()}");
 			}
