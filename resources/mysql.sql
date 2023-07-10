@@ -6,7 +6,16 @@
 -- #       :username string
 -- #       :xuid string
 -- #       :device_id string
-REPLACE INTO player_data (uuid, role_name, username, xuid, device_id) VALUES (:uuid, :role_name, :username, :xuid, :device_id)
+-- #       :last_address string
+REPLACE INTO player_data (uuid, role_name, username, xuid, device_id, last_address) VALUES (:uuid, :role_name, :username, :xuid, :device_id, :last_address)
+-- #    }
+-- #    { update
+-- #       :role_name string
+-- #       :username string
+-- #       :device_id string
+-- #       :last_address string
+-- #       :xuid string
+UPDATE player_data SET role_name = :role_name, username = :username, device_id = :device_id, last_address = :last_address WHERE xuid = :xuid LIMIT 1
 -- #    }
 -- #    { load
 -- # 	  :xuid string

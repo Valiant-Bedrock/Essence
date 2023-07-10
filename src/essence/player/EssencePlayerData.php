@@ -36,6 +36,7 @@ final class EssencePlayerData {
 		#[Field] public string $username,
 		#[Field(name: "xuid")] public string $xuid,
 		#[Field(name: "device_id")] public string $deviceId,
+		#[Field(name: "last_address")] public string $lastIp,
 	) {
 	}
 
@@ -49,13 +50,25 @@ final class EssencePlayerData {
 	}
 
 	public function updateIdentity(Player $player, PlayerExtradata $extraData): Generator {
-		// don't save row if nothing has changed
-		if ($this->deviceId === $extraData->deviceId && $this->xuid === $player->getXuid()) {
+		if ($this->deviceId === $extraData->deviceId && $this->xuid === $player->getXuid() && $this->lastIp === $player->getNetworkSession()->getIp()) {
 			return true;
 		}
 		$this->deviceId = $extraData->deviceId;
 		$this->xuid = $player->getXuid();
-		return yield from $this->saveToDatabase();
+		$this->lastIp = $player->getNetworkSession()->getIp();
+		return yield from $this->updateInDatabase();
+	}
+
+	/**
+	 * @throws UnmarshalException
+	 */
+	public function updateInDatabase(): Generator {
+		return yield from Await::promise(fn (Closure $resolve, Closure $reject) => EssenceBase::getInstance()->getConnector()->executeGeneric(
+			queryName: EssenceDatabaseKeys::PLAYER_UPDATE,
+			args: $this->marshal(),
+			onSuccess: fn () => $resolve(true),
+			onError: fn (Throwable $error) => $reject(new EssenceDataException($error->getMessage()))
+		));
 	}
 
 	/**
@@ -76,7 +89,8 @@ final class EssencePlayerData {
 			role: EssenceRole::USER(),
 			username: $player->getName(),
 			xuid: $player->getXuid(),
-			deviceId: $extraData->deviceId
+			deviceId: $extraData->deviceId,
+			lastIp: $player->getNetworkSession()->getIp(),
 		);
 	}
 }
