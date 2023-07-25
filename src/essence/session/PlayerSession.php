@@ -25,6 +25,7 @@ use essence\player\EssencePlayerData;
 use essence\role\EssenceRole;
 use Generator;
 use libMarshal\exception\UnmarshalException;
+use LogicException;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\player\Player;
 use function array_combine;
@@ -49,8 +50,8 @@ final class PlayerSession {
 			try {
 				yield from $this->saveToDatabase();
 				EssenceBase::getInstance()->getLogger()->debug("Updated username for {$this->player->getName()}");
-			} catch (EssenceDataException $exception) {
-				EssenceBase::getInstance()->getLogger()->warning("Failed to update username for {$this->player->getName()}");
+			} catch (EssenceDataException|LogicException $exception) {
+				EssenceBase::getInstance()->getLogger()->warning("Failed to update username for {$this->player->getName()}: {$exception->getMessage()}");
 			}
 		}
 	}
@@ -75,7 +76,7 @@ final class PlayerSession {
 				deviceOS: $extraData->deviceOS,
 				inputMode: $extraData->currentInputMode,
 			);
-		} catch (UnmarshalException $exception) {
+		} catch (UnmarshalException|LogicException $exception) {
 			throw new EssenceDataException($exception->getMessage(), $exception->getCode(), $exception);
 		}
 	}

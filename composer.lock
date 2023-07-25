@@ -908,12 +908,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NetherGamesMC/BedrockProtocol.git",
-                "reference": "2e712dbc946299159dda4b0677bed77c472fa701"
+                "reference": "edc89cf2a4e730275667227cecf9fa3f54eb7277"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NetherGamesMC/BedrockProtocol/zipball/2e712dbc946299159dda4b0677bed77c472fa701",
-                "reference": "2e712dbc946299159dda4b0677bed77c472fa701",
+                "url": "https://api.github.com/repos/NetherGamesMC/BedrockProtocol/zipball/edc89cf2a4e730275667227cecf9fa3f54eb7277",
+                "reference": "edc89cf2a4e730275667227cecf9fa3f54eb7277",
                 "shasum": ""
             },
             "require": {
@@ -956,7 +956,7 @@
             "support": {
                 "source": "https://github.com/NetherGamesMC/BedrockProtocol/tree/master"
             },
-            "time": "2023-07-12T13:40:30+00:00"
+            "time": "2023-07-18T21:09:42+00:00"
         },
         {
             "name": "phpstan/phpstan",
@@ -1539,12 +1539,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NetherGamesMC/PocketMine-MP.git",
-                "reference": "f4ea8e8b74598426185d22c47cd2f8d4f080cf6a"
+                "reference": "f0c6dd62eb1fa9ca21ebe202754a70a5f018fab4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NetherGamesMC/PocketMine-MP/zipball/f4ea8e8b74598426185d22c47cd2f8d4f080cf6a",
-                "reference": "f4ea8e8b74598426185d22c47cd2f8d4f080cf6a",
+                "url": "https://api.github.com/repos/NetherGamesMC/PocketMine-MP/zipball/f0c6dd62eb1fa9ca21ebe202754a70a5f018fab4",
+                "reference": "f0c6dd62eb1fa9ca21ebe202754a70a5f018fab4",
                 "shasum": ""
             },
             "require": {
@@ -1653,7 +1653,7 @@
                     "url": "https://github.com/pmmp/PocketMine-MP#donate"
                 }
             ],
-            "time": "2023-07-14T16:42:25+00:00"
+            "time": "2023-07-18T21:13:26+00:00"
         },
         {
             "name": "pocketmine/raklib",
@@ -2177,12 +2177,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/diff.git",
-                "reference": "ce48b1f07567296a5afbb12c79ebb090a8217e92"
+                "reference": "d6395c76a83297aa3dbb5f3f134b3f22d8ebfa5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/ce48b1f07567296a5afbb12c79ebb090a8217e92",
-                "reference": "ce48b1f07567296a5afbb12c79ebb090a8217e92",
+                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/d6395c76a83297aa3dbb5f3f134b3f22d8ebfa5d",
+                "reference": "d6395c76a83297aa3dbb5f3f134b3f22d8ebfa5d",
                 "shasum": ""
             },
             "require": {
@@ -2237,7 +2237,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-07-06T09:10:26+00:00"
+            "time": "2023-07-17T05:02:42+00:00"
         },
         {
             "name": "symfony/console",
@@ -2245,12 +2245,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "f1209321ba5fafcddffe549edfd267bfc98a5a28"
+                "reference": "cfa88bac6e7b2ea8813360fb0fef961fe960e1e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/f1209321ba5fafcddffe549edfd267bfc98a5a28",
-                "reference": "f1209321ba5fafcddffe549edfd267bfc98a5a28",
+                "url": "https://api.github.com/repos/symfony/console/zipball/cfa88bac6e7b2ea8813360fb0fef961fe960e1e2",
+                "reference": "cfa88bac6e7b2ea8813360fb0fef961fe960e1e2",
                 "shasum": ""
             },
             "require": {
@@ -2327,7 +2327,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-10T11:49:19+00:00"
+            "time": "2023-07-25T15:08:44+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2403,12 +2403,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "a246917953f7ebb308b2f7c3c08ad4f9130ef4f0"
+                "reference": "8a9a52ce4491d13ee6974ae133d11425442054d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/a246917953f7ebb308b2f7c3c08ad4f9130ef4f0",
-                "reference": "a246917953f7ebb308b2f7c3c08ad4f9130ef4f0",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/8a9a52ce4491d13ee6974ae133d11425442054d7",
+                "reference": "8a9a52ce4491d13ee6974ae133d11425442054d7",
                 "shasum": ""
             },
             "require": {
@@ -2475,7 +2475,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-06T06:58:38+00:00"
+            "time": "2023-07-25T08:53:33+00:00"
         },
         {
             "name": "symfony/event-dispatcher-contracts",
@@ -2624,12 +2624,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "87bcb7233263d68b760a24401ed0e0d7e7064076"
+                "reference": "1989b02317b21560f945d5d07796a0343bd5917a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/87bcb7233263d68b760a24401ed0e0d7e7064076",
-                "reference": "87bcb7233263d68b760a24401ed0e0d7e7064076",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/1989b02317b21560f945d5d07796a0343bd5917a",
+                "reference": "1989b02317b21560f945d5d07796a0343bd5917a",
                 "shasum": ""
             },
             "require": {
@@ -2680,7 +2680,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-13T14:49:39+00:00"
+            "time": "2023-07-25T15:08:44+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -2688,12 +2688,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/options-resolver.git",
-                "reference": "a10f19f5198d589d5c33333cffe98dc9820332dd"
+                "reference": "b8c939b189240e402dc7c20504283bf2f6c8c94e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/a10f19f5198d589d5c33333cffe98dc9820332dd",
-                "reference": "a10f19f5198d589d5c33333cffe98dc9820332dd",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/b8c939b189240e402dc7c20504283bf2f6c8c94e",
+                "reference": "b8c939b189240e402dc7c20504283bf2f6c8c94e",
                 "shasum": ""
             },
             "require": {
@@ -2731,7 +2731,7 @@
                 "options"
             ],
             "support": {
-                "source": "https://github.com/symfony/options-resolver/tree/v6.3.0-RC1"
+                "source": "https://github.com/symfony/options-resolver/tree/6.4"
             },
             "funding": [
                 {
@@ -2747,7 +2747,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-12T14:21:09+00:00"
+            "time": "2023-07-25T15:08:44+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -3253,12 +3253,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "7fa4ed655057d7486063a62ad68ccbf2db18ef78"
+                "reference": "8f38ed0bd6164cad8f0a3b40df0dc65bd070b66b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/7fa4ed655057d7486063a62ad68ccbf2db18ef78",
-                "reference": "7fa4ed655057d7486063a62ad68ccbf2db18ef78",
+                "url": "https://api.github.com/repos/symfony/process/zipball/8f38ed0bd6164cad8f0a3b40df0dc65bd070b66b",
+                "reference": "8f38ed0bd6164cad8f0a3b40df0dc65bd070b66b",
                 "shasum": ""
             },
             "require": {
@@ -3306,7 +3306,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-12T16:01:16+00:00"
+            "time": "2023-07-25T15:08:44+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -3459,12 +3459,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "09c2a386ca509a61348de71c40c844e42570a1d8"
+                "reference": "f073957f12f594323ac71727df7264d8fb5f8511"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/09c2a386ca509a61348de71c40c844e42570a1d8",
-                "reference": "09c2a386ca509a61348de71c40c844e42570a1d8",
+                "url": "https://api.github.com/repos/symfony/string/zipball/f073957f12f594323ac71727df7264d8fb5f8511",
+                "reference": "f073957f12f594323ac71727df7264d8fb5f8511",
                 "shasum": ""
             },
             "require": {
@@ -3537,7 +3537,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-05T13:06:06+00:00"
+            "time": "2023-07-25T15:42:22+00:00"
         },
         {
             "name": "webmozart/assert",
