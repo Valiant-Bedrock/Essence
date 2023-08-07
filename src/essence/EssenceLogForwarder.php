@@ -62,6 +62,10 @@ final class EssenceLogForwarder extends ThreadedLoggerAttachment {
 	 * @param LogLevel::* $level
 	 */
 	public function handle(string $level, string $message): void {
+		// TODO: how can we pass our forwarding IDs between threads w/o hardcoding it as a constant?
+		if (!isset(self::$logChannel)) {
+			return;
+		}
 		self::$logChannel->sendEmbed(new RichEmbed(
 			title: "Notification - " . strtoupper($level),
 			description: "",
