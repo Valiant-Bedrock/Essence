@@ -24,6 +24,7 @@ use function array_fill_keys;
  * @method static self COMMAND_BAN()
  * @method static self COMMAND_FREEZE()
  * @method static self COMMAND_KILL()
+ * @method static self COMMAND_CLEAR()
  * @method static self COMMAND_SETROLE()
  */
 final class EssencePermissions {
@@ -33,6 +34,7 @@ final class EssencePermissions {
 		self::register("command_ban", "essence.command.ban", "Allows the player to use the `ban` command", true);
 		self::register("command_freeze", "essence.command.freeze", "Allows the player to use the `freeze` command", true);
 		self::register("command_kill", "essence.command.kill", "Allows the player to use the `kill` command", true);
+		self::register("command_clear", "essence.command.clear", "Allows the player to use the `clear` command", true);
 		self::register("command_setrole", "essence.command.setrole", "Allows the player to use the `setrole` command", true);
 	}
 

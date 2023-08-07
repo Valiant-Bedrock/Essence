@@ -112,6 +112,8 @@ final class EssenceBase extends PluginBase {
 	private function setupCommands(): void {
 		LibCommandBase::register($this);
 		VanillaCommandPatcher::register($this);
+		$clearCommand = $this->mustGetCommand("clear");
+		$clearCommand->setPermission((string) EssencePermissions::COMMAND_CLEAR());
 		$killCommand = $this->mustGetCommand("kill");
 		$killCommand->setPermission((string) EssencePermissions::COMMAND_KILL());
 	}
