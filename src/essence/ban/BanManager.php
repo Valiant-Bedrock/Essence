@@ -185,23 +185,31 @@ final class BanManager extends Manageable implements Listener {
 			return;
 		}
 
-		$extraData = PlayerExtradata::unmarshal($info->getExtraData());
-		$bans = $this->fetchBans($info->getUsername(), $info->getUsername(), $event->getIp(), $extraData->deviceId);
-		$this->getLogger()->debug("Found " . count($bans) . " ban(s) for player {$info->getUsername()}");
-		foreach ($bans as $ban) {
-			if (!$ban->isCurrent()) {
-				$this->getLogger()->debug("Removing non-current ban: $ban");
-				$this->removeBan($ban);
-				continue;
+		try {
+			$extraData = PlayerExtradata::unmarshal($info->getExtraData());
+			$bans = $this->fetchBans($info->getUsername(), $info->getUsername(), $event->getIp(), $extraData->deviceId);
+			$this->getLogger()->debug("Found " . count($bans) . " ban(s) for player {$info->getUsername()}");
+			foreach ($bans as $ban) {
+				if (!$ban->isCurrent()) {
+					$this->getLogger()->debug("Removing non-current ban: $ban");
+					$this->removeBan($ban);
+					continue;
+				}
+				$event->setKickReason(
+					flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
+					message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
+						reason: $ban->reason,
+						expires: $ban->getExpiryAsString()
+					))
+				);
+				Await::g2c($this->checkBanDetails($ban, $info, $event->getIp(), $extraData));
 			}
+		} catch (UnmarshalException $exception) {
 			$event->setKickReason(
 				flag: PlayerPreLoginEvent::KICK_REASON_PLUGIN,
-				message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_ban(
-					reason: $ban->reason,
-					expires: $ban->getExpiryAsString()
-				))
+				message: TranslationHandler::getInstance()->translate(EssenceTranslationFactory::kick_data_failure())
 			);
-			Await::g2c($this->checkBanDetails($ban, $info, $event->getIp(), $extraData));
+			$this->getLogger()->error("Failed to unmarshal player extra-data: {$exception->getMessage()}");
 		}
 	}
 
